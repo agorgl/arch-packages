@@ -1,0 +1,35 @@
+# Maintainer: Loukas Agorgianitis <loukas@agorgianitis.com>
+
+pkgname=janet
+pkgver=1.41.2
+pkgrel=1
+pkgdesc="A dynamic language and bytecode vm"
+arch=("x86_64")
+url="https://janet-lang.org/"
+license=("MIT")
+depends=()
+makedepends=("git")
+options=("staticlibs" "!strip")
+source=("$pkgname::git+https://github.com/janet-lang/janet#tag=v$pkgver")
+sha256sums=('1c84a7910e53f9cdd5fdaeabd00ff1ac2e410010b8d41fd4dd12bd84e0c76bca')
+
+build() {
+	cd "$pkgname"
+	export CFLAGS="${CFLAGS} -g"
+	export LDFLAGS="${LDFLAGS} -rdynamic"
+	make PREFIX="/usr"
+	make docs
+}
+
+check() {
+	cd "$pkgname"
+	make test
+}
+
+package() {
+	cd "$pkgname"
+	make DESTDIR="$pkgdir/" PREFIX="/usr" install
+	install -Dm0644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+	install -Dm0644 build/doc.html -t "$pkgdir/usr/share/doc/$pkgname/"
+	cp -av examples/ "$pkgdir/usr/share/doc/$pkgname/"
+}
