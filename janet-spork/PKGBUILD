@@ -1,0 +1,53 @@
+# Maintainer: Loukas Agorgianitis <loukas@agorgianitis.com>
+
+pkgname=janet-spork
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="Various Janet utility modules - the official "Contrib" library"
+arch=("x86_64")
+url="https://github.com/janet-lang/spork"
+license=("MIT")
+depends=("janet")
+makedepends=("git")
+options=("staticlibs" "!strip")
+source=("$pkgname::git+$url#tag=v$pkgver")
+sha256sums=('9537483848cf9f2a7f60ddac46873a8256b56ea9b083c1d3206ea940b97fe971')
+
+build() {
+	cd "$pkgname"
+	janet -l ./bundle -e '(build)'
+}
+
+check() {
+	cd "$pkgname"
+
+	# spork must be installed to test properly
+	# create a temporary syspath for testing
+	export JANET_PATH="./janet_modules"
+	mkdir -p $JANET_PATH
+
+	janet --install .
+	janet -l ./bundle -e '(check)'
+
+	unset JANET_PATH
+}
+
+package() {
+	cd "$pkgname"
+
+	local syspath="$(janet -e '(print (dyn :syspath))')"
+	install -d "$pkgdir/$syspath"
+	install -d "$pkgdir/usr/share/doc/$pkgname"
+
+	JANET_PATH="$pkgdir/$syspath" janet --install .
+	find "$pkgdir" -type f -exec sed -i "s|$pkgdir||g" {} \;
+	find "$pkgdir" -type f -exec sed -i "s|$srcdir|.|g" {} \;
+
+	install -Dm0755 $pkgdir/$syspath/bin/* -t "$pkgdir/usr/bin/"
+	install -Dm0644 $pkgdir/$syspath/man/man1/* -t "$pkgdir/usr/share/man/man1/"
+	install -Dm0644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+	cp -av examples/ "$pkgdir/usr/share/doc/$pkgname/"
+
+	rm -rf $pkgdir/$syspath/bin/
+	rm -rf $pkgdir/$syspath/man/
+}
