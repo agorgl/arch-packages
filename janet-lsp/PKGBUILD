@@ -1,0 +1,32 @@
+# Maintainer: Loukas Agorgianitis <loukas@agorgianitis.com>
+
+pkgname=janet-lsp
+pkgver=0.0.12
+pkgrel=1
+pkgdesc="A Language Server (LSP) for the Janet programming language"
+arch=("x86_64")
+url="https://github.com/CFiggers/janet-lsp"
+license=("MIT")
+depends=("janet")
+makedepends=("jpm")
+source=("$pkgname::git+$url#tag=v$pkgver")
+sha256sums=('0048585d9fd0ff49adc04416191058ad933f6ef915457da1772681a2ebaaa71f')
+
+build() {
+	cd "$pkgname"
+	jpm deps --local
+	jpm build --local
+}
+
+check() {
+	cd "$pkgname"
+	jpm test --local
+}
+
+package() {
+	cd "$pkgname"
+	local modpath="$(janet -e '(print (dyn :syspath))')"
+	mkdir -p "$pkgdir/$modpath"
+	jpm install --dest-dir="$pkgdir"
+	install -Dm0644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

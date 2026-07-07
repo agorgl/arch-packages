@@ -1,0 +1,13 @@
+pkgbase = janet-lsp
+	pkgdesc = A Language Server (LSP) for the Janet programming language
+	pkgver = 0.0.12
+	pkgrel = 1
+	url = https://github.com/CFiggers/janet-lsp
+	arch = x86_64
+	license = MIT
+	makedepends = jpm
+	depends = janet
+	source = janet-lsp::git+https://github.com/CFiggers/janet-lsp#tag=v0.0.12
+	sha256sums = 0048585d9fd0ff49adc04416191058ad933f6ef915457da1772681a2ebaaa71f
+
+pkgname = janet-lsp
