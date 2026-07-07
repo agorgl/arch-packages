@@ -1,0 +1,13 @@
+pkgbase = jpm
+	pkgdesc = Janet Project Manager
+	pkgver = 1.2.0
+	pkgrel = 1
+	url = https://github.com/janet-lang/jpm
+	arch = x86_64
+	license = MIT
+	makedepends = git
+	depends = janet
+	source = jpm::git+https://github.com/janet-lang/jpm#tag=v1.2.0
+	sha256sums = af2ecf3c909362c89bb1b92a157c0c527caebfc38e70fb1703d6a0d1c7987a20
+
+pkgname = jpm

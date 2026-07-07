@@ -1,0 +1,20 @@
+# Maintainer: Loukas Agorgianitis <loukas@agorgianitis.com>
+
+pkgname=jpm
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="Janet Project Manager"
+arch=("x86_64")
+url="https://github.com/janet-lang/jpm"
+license=("MIT")
+depends=("janet")
+makedepends=("git")
+source=("$pkgname::git+$url#tag=v$pkgver")
+sha256sums=('af2ecf3c909362c89bb1b92a157c0c527caebfc38e70fb1703d6a0d1c7987a20')
+
+package() {
+	cd "$pkgname"
+	DESTDIR="$pkgdir/" PREFIX="/usr" janet bootstrap.janet
+	install -Dm0644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+	install -Dm0644 jpm.1 -t "$pkgdir/usr/share/man/man1/"
+}
